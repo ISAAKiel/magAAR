@@ -1,0 +1,18 @@
+Package: aRchgeomag
+Title: Process geomagnetic field data from archaeological contexts
+Version: 0.1
+Authors@R: person("Moritz", "Mennenga", email = "mennenga@nihk.de",
+                  role = c("aut", "cre"))
+Description: The package helps to analyse gemagnetic field data from archaeological contexts. It
+    can do a classification of anomalies to find dipoles. Additional it is possible to get the values of
+    the width and the heigth of each anomaly to do further research, like classification of the anomalies
+Depends: R (>= 3.1.0)
+License: CC-BY
+LazyData: true
+Imports:
+    raster,
+    rgdal
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

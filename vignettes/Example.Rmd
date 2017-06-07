@@ -1,0 +1,110 @@
+---
+title: "Example"
+author: "Moritz Mennenga"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This Vignette will show an example of the function `analyseMagentic()`
+
+
+## Prepare the data
+
+At first we need some librarys to handle the spatial data
+
+```{r, eval=TRUE}
+library(rgdal)
+library(raster)
+devtools::load_all() #< In you case library(aRchgeomag)
+```
+
+The data you need for analysing it are:
+
+- The gemagnetic data as a raster layer
+  For example: Export the data from DLMGPS as .asc
+  Import the data to R or convert it with SAGA to .sdat
+
+```{r, fig.width=7, fig.height=5}
+magnetik_disp <- magnetik
+magnetik_disp[magnetik_disp > 4] <- 4
+magnetik_disp[magnetik_disp < -4] <- -4
+plot(magnetik_disp)
+```  
+
+
+- A SpatialDataFrame with a point in the middle of each anomalie
+  Easy to do this is to clip the rasterdata at rasonable nT-value (in this example 2nT), convert the areas to polygon and determine the polygon centroids
+
+```{r, fig.width=7, fig.height=5}
+plot(magnetik_disp)
+points(anomalien, pch = 21, bg = "red", col="black")
+```  
+
+## Identify the dipoles
+
+For identifing the dipole a few parameters have to be set
+
+**get_dipol** <- TRUE -- We want to export the dipoles
+
+**angle_steps** <- The script will generate profiles throught the anomaly. These profiles will be generate in steps of angle_steps° (>0 && < 180), as more profiles are used, as more detailed the resolution is, but as longer the calculation takes
+
+**searchradius** <- the distance from the point in the anomalie that is under observation
+
+**dipolfactor** <- 1. way to define a dipole: The dipole is defined by |minimal value in the profiles * dipolfactor| > maximal value in the profile
+
+**dipol_minima** <- Additional way to define a dipole. In some cases it is usefull to define a lower border of nT. All anomalies that have values lower this border are defied as dipoles
+
+*tip: Open your data in GIS (e.g. QGIS) and draw a profile (e.g. Terrain profile) through your anomalies and dipoles to understand your data* 
+
+Now we can calculate the dipoles
+
+```{r, fig.width=7, fig.height=5}
+anomalies_export <- analyseMagnetic(anomalies_sdf = anomalien, magnetic_raster=magnetik, get_dipol = TRUE, angle_steps = 10 , searchradius = 2.5,dipolfactor = 2,dipol_minima = -8)
+plot(magnetik_disp)
+points(anomalies_export[anomalies_export@data$di_kB == 2,], pch = 21, bg = "black", col="black")
+points(anomalies_export[anomalies_export@data$di_kB == 1,], pch = 21, bg = "red", col="black")
+points(anomalies_export[anomalies_export@data$di_kB == 0,], pch = 21, bg = "green", col="black")
+```
+
+*All red dots are marked as dipoles. As you can see there are two anomalies next to each other marked. The negative area of one anomaly can influence another one, if it is in the same searchradius. Therefore it is* **important** *to validate the data after this step*
+
+*Anomalies marked with 0 (green) are potential anicient*
+
+*Anomalies marked with 2 (black) are under the dipole minima. In this case the black anomalie would be red, if the dipole_minima is to low*
+
+## Getting the values of the profiles
+
+To do statistical similarity tests it is necessary to analyse the amplitudes of the anomalies and get the values of width and heigth
+
+Therefore we can use other parameters
+
+**get_profile_values** <- TRUE -- We want to export the values
+
+**angle_steps** The script will generate profiles throught the anomalie. These profiles will be generate in steps of angle_steps° (>0 && < 180), as more profiles are used, as more detailed the resolution is, but as longer the calculation takes
+
+**searchradius** the distance from the point in the anomalie that is under observation
+
+**cut_value** To compare the data we need a similar base for every amplitude. If we have an aplitude the function will return the width of the amplitude at the level of *cut_value* nT. Like in the first step, it is advisable to take a look at your data in GIS first
+
+**method** For every anomalie there will be a few profiles based on angle_steps. There are two methods to get the width values of the amplitude of the profile. "avg": There average width of all profiles or "median": the median width of all profiles
+
+
+```{r, fig.width=7, fig.height=5}
+anomalies_compare <- anomalies_export[anomalies_export@data$di_kB == 0,]
+anomalies_result <- analyseMagnetic(anomalies_sdf = anomalies_compare, magnetic_raster=magnetik, get_profile_values = TRUE, angle_steps = 10, searchradius = 2.5, cut_value = 2, method = "avg")
+```
+
+There result is a SpatialDataFrame containing the width and heigth of each anomaly
+
+```{r, fig.width=7, fig.height=5}
+anomalies_result@data
+
+```
+
+Now you can compare your anomalies e.g. with a cluster analysis and group them to find similar geomagnetic features
+
+
