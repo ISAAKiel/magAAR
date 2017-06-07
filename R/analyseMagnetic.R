@@ -143,6 +143,7 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
         stopp <- FALSE
 
         while(w <= nrow(mag_profile)){
+          #HIER PRÜFEN OB DER ERSTE WERT UNTER DEM CUT VALUE LIEGT, WENN JA DANN DISTANCE = 0
           #If the cutting value has reached, claculate the nT value at the cutting value
           if(mag_profile$value[w] < cut_value && stopp == FALSE){
             #getting the distance between the highest point and the value before the cutting value had reached
