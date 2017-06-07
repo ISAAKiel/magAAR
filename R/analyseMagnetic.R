@@ -163,7 +163,7 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
             #to get the magnetic value at the cutting point, a linear regression is used
             fm <- lm(xw ~ yw)
             #predict the xvalue(distance) for the yvalue(cutting value)
-            a <- predict(fm, data.frame(yw = c(2)), se.fit = TRUE)$fit
+            a <- predict(fm, data.frame(yw = c(cut_value)), se.fit = TRUE)$fit
             #The distance from the middle point to the cutting value is the distance to the point before
             #reaching the cutting value and the predicted distance
             distance_right <- (w - x_row - 1) * distance + a
@@ -175,6 +175,7 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
         stopp <- FALSE
         while(w > 0){
           if(mag_profile$value[w] < cut_value && stopp == FALSE){
+            #HIER PRÜFEN OB DER ERSTE WERT UNTER DEM CUT VALUE LIEGT, WENN JA DANN DISTANCE = 0
             x1 <- mag_profile$x[w+1]
             y1 <- mag_profile$y[w+1]
             x2 <- mag_profile$x[w]
@@ -185,7 +186,7 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
             xw <- c(0, distance)
             yw <- c(mag_profile$value[w], mag_profile$value[w+1])
             fm <- lm(xw ~ yw)
-            a <- predict(fm, data.frame(yw = c(2)), se.fit = TRUE)$fit
+            a <- predict(fm, data.frame(yw = c(cut_value)), se.fit = TRUE)$fit
             distance_left <- (x_row - w) * distance + a
 
           }
