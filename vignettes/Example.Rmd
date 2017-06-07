@@ -90,7 +90,7 @@ Therefore we can use other parameters
 
 **cut_value** To compare the data we need a similar base for every amplitude. If we have an aplitude the function will return the width of the amplitude at the level of *cut_value* nT. Like in the first step, it is advisable to take a look at your data in GIS first
 
-**method** For every anomalie there will be a few profiles based on angle_steps. There are two methods to get the width values of the amplitude of the profile. "avg": There average width of all profiles or "median": the median width of all profiles
+**method** For every anomalie there will be a few profiles based on angle_steps. There are two methods to get the width values of the amplitude of the profile. "avg": There average width of all profiles or "median": the median width of all profiles.
 
 
 ```{r, fig.width=7, fig.height=5}
