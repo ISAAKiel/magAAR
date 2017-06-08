@@ -46,7 +46,7 @@ points(anomalien, pch = 21, bg = "red", col="black")
 
 ## Identify the dipoles
 
-For identifing the dipole a few parameters have to be set
+For identifing the dipole a few parameters have to be set:
 
 **get_dipol** <- TRUE -- We want to export the dipoles
 
