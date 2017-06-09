@@ -142,10 +142,10 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
         #Stopp if value has reached
         stopp <- FALSE
 
-        while(w <= nrow(mag_profile)){
+        while(w <= nrow(mag_profile) && stopp == FALSE){
           #HIER PRÜFEN OB DER ERSTE WERT UNTER DEM CUT VALUE LIEGT, WENN JA DANN DISTANCE = 0
           #If the cutting value has reached, claculate the nT value at the cutting value
-          if(mag_profile$value[w] < cut_value && stopp == FALSE){
+          if(mag_profile$value[w] < cut_value){
             #getting the distance between the highest point and the value before the cutting value had reached
             x1 <- mag_profile$x[w-1]
             y1 <- mag_profile$y[w-1]
@@ -153,7 +153,6 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
             y2 <- mag_profile$y[w]
             #getting the slope
             m <- (y2-y1) / (x2-x1)
-            stopp <- TRUE
             #calculating the distance between the two points
             distance <- sqrt(  ((x2 - x1) ^2) + ((y2 - y1) ^2))
             #generate dataframe with values
@@ -168,14 +167,17 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
             #The distance from the middle point to the cutting value is the distance to the point before
             #reaching the cutting value and the predicted distance
             distance_right <- (w - x_row - 1) * distance + a
+            if(distance_right < 0 || w == x_row)
+            {distance_right <- 0}
+            stopp <- TRUE
           }
           w <- w + 1
         }
         #Same will be done for the left site of the graph
         w <- x_row
         stopp <- FALSE
-        while(w > 0){
-          if(mag_profile$value[w] < cut_value && stopp == FALSE){
+        while(w > 0 && stopp == FALSE){
+          if(mag_profile$value[w] < cut_value){
             #HIER PRÜFEN OB DER ERSTE WERT UNTER DEM CUT VALUE LIEGT, WENN JA DANN DISTANCE = 0
             x1 <- mag_profile$x[w+1]
             y1 <- mag_profile$y[w+1]
@@ -188,8 +190,9 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
             yw <- c(mag_profile$value[w], mag_profile$value[w+1])
             fm <- lm(xw ~ yw)
             a <- predict(fm, data.frame(yw = c(cut_value)), se.fit = TRUE)$fit
-            distance_left <- (x_row - w) * distance + a
-
+            distance_left <- (x_row - w) * distance - a
+            if(distance_left<0 || w == x_row)
+            {distance_left <- 0}
           }
           w <- w - 1
         }
@@ -212,10 +215,8 @@ analyseMagnetic <- function(anomalies_sdf,magnetic_raster,searchradius=2,dipolfa
         }
 
         #The heigth (magnetic value) is alle the time the highest value
-        if (anomalies_sdf@data$an_hoehe[k] == 0){
-          anomalies_sdf@data$an_hoehe[k] <- max(na.omit(mag_profile$value))
-        } else if (anomalies_sdf@data$an_hoehe[k] > 0 && max(na.omit(mag_profile$value)) > anomalies_sdf@data$an_hoehe[k]){
-          anomalies_sdf@data$an_hoehe[k] <- max(na.omit(mag_profile$value))
+        if (max(na.omit(mag_profile$value))-cut_value > 0){
+         anomalies_sdf@data$an_hoehe[k] <- max(na.omit(mag_profile$value))-cut_value
         }
       }
 

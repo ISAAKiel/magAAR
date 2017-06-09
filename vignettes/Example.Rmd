@@ -53,7 +53,7 @@ For identifing the dipole a few parameters have to be set:
 **angle_steps** <- The script will generate profiles throught the anomaly. These profiles will be generate in steps of angle_steps° (>0 && < 180), as more profiles are used, as more detailed the resolution is, but as longer the calculation takes
 
 **searchradius** <- the distance from the point in the anomalie that is under observation
-
+K
 **dipolfactor** <- 1. way to define a dipole: The dipole is defined by |minimal value in the profiles * dipolfactor| > maximal value in the profile
 
 **dipol_minima** <- Additional way to define a dipole. In some cases it is usefull to define a lower border of nT. All anomalies that have values lower this border are defied as dipoles
@@ -95,7 +95,7 @@ Therefore we can use other parameters
 
 ```{r, fig.width=7, fig.height=5}
 anomalies_compare <- anomalies_export[anomalies_export@data$di_kB == 0,]
-anomalies_result <- analyseMagnetic(anomalies_sdf = anomalies_compare, magnetic_raster=magnetik, get_profile_values = TRUE, angle_steps = 10, searchradius = 2.5, cut_value = 2, method = "avg")
+anomalies_result <- analyseMagnetic(anomalies_sdf = anomalies_compare, magnetic_raster=magnetik, get_profile_values = TRUE, angle_steps = 10, searchradius = 2.5, cut_value = 5, method = "avg")
 ```
 
 There result is a SpatialDataFrame containing the width and heigth of each anomaly
