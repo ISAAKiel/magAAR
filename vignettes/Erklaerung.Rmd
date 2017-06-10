@@ -200,25 +200,24 @@ In diesem Fall also kein Dipol
 ```{r, fig.width=7, fig.height=5}
       #A dipol is defined by |minimal value * dipolfactor| > maximal value
       #na.omit, they can be generated be boundary effects
-      if (get_dipol == TRUE && abs(min(na.omit(mag_profile$value))) * dipolfactor > max(na.omit(mag_profile$value)) &&
-          min(na.omit(mag_profile$value)) < 0)
+      if (get_dipol == TRUE && abs(min(na.omit(mag_profile$value))) * dipolfactor > max(na.omit(mag_profile$value)) && min(na.omit(mag_profile$value)) < 0)
       {
         #writing the result in spatial data frame
         anomalies_sdf@data$di_kB[k] <- 1
       }
 
-print(anomalies_sdf@data)
+			print(anomalies_sdf@data)
 ```
 
 Der zweite Weg einer Definiton ist dadurch begründet, dass in einigen Fällen (dann wenn die minimalen und maximalen nT-Werte extrem waren) dieser Weg nicht funktionert hat. Daher ist festgelegt, dass Anomalien mit Werten unter einem bestimmten nT-Wert ebenfalls markiert werden.Der Grenzwert dafür ist **dipol_minima**.
 
 ```{r, fig.width=7, fig.height=5}
       #The dipol can also be defined as a minimum < dipol_minima.
-      if (get_dipol == TRUE && min(na.omit(mag_profile$value)) < dipol_minima){.
+      if (get_dipol == TRUE && min(na.omit(mag_profile$value)) < dipol_minima){
         #writing the result in spatial data frame
         anomalies_sdf@data$di_kB[k] <- 2
       }
-print(anomalies_sdf@data)
+			print(anomalies_sdf@data)
 ```
 
 Nun wird das Profil rotiert und für jeden **angle_step** dieses Vorgehen wiederholt. Degree ist dabei die Zählvariable, die sich bei jedem Durchlauf um **angle_step** erhöht.
@@ -270,8 +269,7 @@ Durch das gedrehte Profil wird nun der Kurvenverlauf eines typischen Dipols sich
 
             #A dipol is defined by |minimal value * dipolfactor| > maximal value
       #na.omit, they can be generated be boundary effects
-      if (get_dipol == TRUE && abs(min(na.omit(mag_profile$value))) * dipolfactor > max(na.omit(mag_profile$value)) &&
-          min(na.omit(mag_profile$value)) < 0)
+      if (get_dipol == TRUE && abs(min(na.omit(mag_profile$value))) * dipolfactor > max(na.omit(mag_profile$value)) && min(na.omit(mag_profile$value)) < 0)
       {
         #writing the result in spatial data frame
         anomalies_sdf@data$di_kB[k] <- 1
@@ -288,7 +286,7 @@ Wird der Wert **dipole_minima** > dem Minimalwert gewählt, so wird die Anomalie
         #writing the result in spatial data frame
         anomalies_sdf@data$di_kB[k] <- 2
       }
-print(anomalies_sdf@data)
+			print(anomalies_sdf@data)
 ```
 
 Nun bietet es sich an die Datei zu exportieren und im GIS zu prüfen, ob alle richtig klassifiziert worden sind.
@@ -355,8 +353,8 @@ Koordinaten müssen bestimmt werden und die Magnetikwerte ausgelesen
     names(mag_profile) <- c("x", "y", "value")
     #First value can be deleted
     mag_profile <- mag_profile[-1, ]
-      plot(mag_profile$x,mag_profile$value)
-      abline (h=cut_value,col="red")
+    plot(mag_profile$x,mag_profile$value)
+    abline (h=cut_value,col="red")
 ```
 
 Die Daten dürfen keine NA Werte haben. Dies kann passieren, wenn eine Anomalie am Rand des Bildes liegt.
@@ -453,7 +451,7 @@ Um den Abstand zwischen der Kurve zu ermitteln werden folgende Schritte durchgef
  
 ```
  
- Hier der Scheitelpunkt - bzw. + der Abstände (rot)
+ Hier der Scheitelpunkt abzüglich bzw. zuzüglich der Abstände (rot)
  
 ```{r, fig.width=7, fig.height=5}
          plot(mag_profile$x,mag_profile$value)
@@ -467,9 +465,9 @@ Um den Abstand zwischen der Kurve zu ermitteln werden folgende Schritte durchgef
 ```{r, fig.width=7, fig.height=5}
          anomalies_sdf@data$an_breite[k] <- distance_left + distance_right
  
-           #The heigth (magnetic value) is alle the time the highest value
+         #The heigth (magnetic value) is alle the time the highest value
  
-           anomalies_sdf@data$an_hoehe[k] <- max(na.omit(mag_profile$value))-cut_value
+         anomalies_sdf@data$an_hoehe[k] <- max(na.omit(mag_profile$value))-cut_value
  
 ```
  
