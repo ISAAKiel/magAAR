@@ -1,1 +1,1 @@
-# archaeomag
+# magAAR
