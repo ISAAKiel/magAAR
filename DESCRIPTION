@@ -1,4 +1,4 @@
-Package: aRchgeomag
+Package: magAAR
 Title: Process geomagnetic field data from archaeological contexts
 Version: 0.1
 Authors@R: person("Moritz", "Mennenga", email = "mennenga@nihk.de",
