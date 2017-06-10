@@ -493,7 +493,7 @@ anomalie_dp <- analyseMagnetic(anomalies_sdf = anomalien, magnetic_raster = magn
  plot(fit) # display dendogram
  rect.hclust(fit, k=2, border="red")
  
- groups <- cutree(fit, k=2) # cut tree into 5 clusters
+ groups <- cutree(fit, k=2) # cut tree into 2 clusters
  anomalie_data@data$groups <- groups
  
  plot(magnetik_disp)
